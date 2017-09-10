@@ -19,8 +19,6 @@ def showhelp():
     print("输入 local 编号 启动socks5代理（暂无）")
     print("输入 stop 清除路由表（关闭连接后请务必执行此命令）")
     print("输入 exit 退出")
-    print("输入 add 进入添加服务器模式（暂无）")
-    print("输入 test 编号进入测试服务器模式（暂无）")
  
 def startclient(uid):
     print("Connecting to ID："+uid)
@@ -115,14 +113,6 @@ def showwrong(choose):
     print(choose+"不是有效的命令")
     print("输入help查看用法")
 
-def addserver():
-    print("暂不可用")
-    pass
-
-def testserver(uid):
-    print("暂不可用")
-    pass
-
 print("ShadowRedir")
 print("支持tcp和udp")
 print("铭谢https://github.com/17mon/china_ip_list")
@@ -137,12 +127,7 @@ while True:
     elif choose[0:9] == "connect -":
         connectserver(choose[8:])
     elif choose[0:6] == "local ":
-        print(choose[6:])
         startsslocal(choose[6:])
-    elif choose == "add":
-        addserver()
-    elif choose[0:4] == "test":
-        testserver(choose[5:])
     elif choose == "stop":
         os.system('sudo iptables -t nat -F SOCKS')
     elif choose == "exit":
