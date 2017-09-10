@@ -54,7 +54,6 @@ def setglobal(uid):
     serverlist.close
     servers = json.loads(serversjson)
     server_host = servers[uid]['server_host']
-    os.system('sudo iptables -t nat -N SOCKS')
     os.system('sudo iptables -t nat -A SOCKS -d 0.0.0.0/8 -j RETURN')
     os.system('sudo iptables -t nat -A SOCKS -d 10.0.0.0/8 -j RETURN')
     os.system('sudo iptables -t nat -A SOCKS -d 127.0.0.0/8 -j RETURN')
@@ -66,7 +65,7 @@ def setglobal(uid):
     os.system('sudo iptables -t nat -A SOCKS -d '+server_host+' -j RETURN')
     os.system('sudo iptables -t nat -A SOCKS -p tcp -j REDIRECT --to-ports 7777')
     os.system('sudo iptables -t nat -A SOCKS -p udp -j REDIRECT --to-ports 7777')
-    os.system('sudo iptables -t nat -A OUTPUT -j SOCKS')
+    
     pass
 
 def setoutchn():
@@ -87,13 +86,16 @@ def setinchn():
 #设置回国路由
 
 def setrouter(model,uid):
+    os.system('sudo iptables -t nat -N SOCKS')
     if model == "-1":
         print("设置全局代理")
         setglobal(uid)
+        os.system('sudo iptables -t nat -A OUTPUT -j SOCKS')
     elif model == "-2":
         print("设置出国路由")
-        setglobal(uid)
         setoutchn()
+        setglobal(uid)
+        os.system('sudo iptables -t nat -A OUTPUT -j SOCKS')
     elif model == "-3":
         print("设置回国路由")
         setinchn()
@@ -107,6 +109,7 @@ def connectserver(tasks):
     setrouter(model,uid)
     startclient(uid)
     os.system('sudo iptables -t nat -F SOCKS')
+    os.system('sudo iptables -t nat -F OUTPUT')
     exit()
 
 def showwrong(choose):
