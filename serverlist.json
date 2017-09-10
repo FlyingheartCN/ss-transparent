@@ -1,0 +1,19 @@
+{
+    "number":2,
+    "note":"请将上面的数字修改为你一共添加的服务器数量",
+    "note2":"请保证下面所有的数字都是连续的否则list会报错",
+    "0":{
+        "server_host":"123.123.123.123",
+        "server_port":10899,
+        "password":"password",
+        "encrypt_method":"aes-256-cfb",
+        "timeout":300,
+        "describe":"第零个服务器"},
+    "1":{
+        "server_host":"123.123.123.123",
+        "server_port":10899,
+        "password":"password",
+        "encrypt_method":"aes-256-cfb",
+        "timeout":300,
+        "describe":"第一个服务器"}
+}
