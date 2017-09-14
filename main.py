@@ -2,13 +2,13 @@ import json
 import os
 
 def listserver():
-    serverlist = open('serverlist.json',encoding='utf-8')
+    serverlist = open('serverlist.json', encoding='utf-8')
     serversjson = serverlist.read()
     serverlist.close
     servers = json.loads(serversjson)
     for x in range(servers['number']):
         y = str(x)
-        print("编号："+y+" IP："+servers[y]['server_host']+" 描述："+servers[y]['describe'])
+        print("编号：" + y + " IP：" + servers[y]['server_host'] + " 描述：" + servers[y]['describe'])
 
 def showhelp():
     print("输入 help 查看用法")
@@ -19,10 +19,10 @@ def showhelp():
     print("输入 local 编号 启动socks5代理（暂无）")
     print("输入 stop 清除路由表（关闭连接后请务必执行此命令）")
     print("输入 exit 退出")
- 
+
 def startclient(uid):
-    print("Connecting to ID："+uid)
-    serverlist = open('serverlist.json',encoding='utf-8')
+    print("Connecting to ID：" + uid)
+    serverlist = open('serverlist.json', encoding='utf-8')
     serversjson = serverlist.read()
     serverlist.close
     servers = json.loads(serversjson)
@@ -31,12 +31,12 @@ def startclient(uid):
     password = servers[uid]['password']
     encrypt_method = servers[uid]['encrypt_method']
     timeout = str(servers[uid]['timeout'])
-    syscall = "ss-redir -s "+server_host+" -p "+server_port+" -b 0.0.0.0 -l 7777 -k "+password+" -m "+encrypt_method+" -t "+timeout+" -u"
+    syscall = "ss-redir -s " + server_host + " -p " + server_port + " -b 0.0.0.0 -l 7777 -k " + password + " -m " + encrypt_method + " -t " + timeout + " -u"
     os.system(syscall)
 
 def startsslocal(uid):
-    print("Connecting to ID："+uid)
-    serverlist = open('serverlist.json',encoding='utf-8')
+    print("Connecting to ID：" + uid)
+    serverlist = open('serverlist.json', encoding='utf-8')
     serversjson = serverlist.read()
     serverlist.close
     servers = json.loads(serversjson)
@@ -45,11 +45,11 @@ def startsslocal(uid):
     password = servers[uid]['password']
     encrypt_method = servers[uid]['encrypt_method']
     timeout = str(servers[uid]['timeout'])
-    syscall = "ss-local -s "+server_host+" -p "+server_port+" -b 127.0.0.1 -l 1080 -k "+password+" -m "+encrypt_method+" -t "+timeout+" -u"
+    syscall = "ss-local -s " + server_host + " -p " + server_port + " -b 127.0.0.1 -l 1080 -k " + password + " -m " + encrypt_method + " -t " + timeout + " -u"
     os.system(syscall)
 
 def setglobal(uid):
-    serverlist = open('serverlist.json',encoding='utf-8')
+    serverlist = open('serverlist.json', encoding='utf-8')
     serversjson = serverlist.read()
     serverlist.close
     servers = json.loads(serversjson)
@@ -62,30 +62,26 @@ def setglobal(uid):
     os.system('sudo iptables -t nat -A SOCKS -d 192.168.0.0/16 -j RETURN')
     os.system('sudo iptables -t nat -A SOCKS -d 224.0.0.0/4 -j RETURN')
     os.system('sudo iptables -t nat -A SOCKS -d 240.0.0.0/4 -j RETURN')
-    os.system('sudo iptables -t nat -A SOCKS -d '+server_host+' -j RETURN')
+    os.system('sudo iptables -t nat -A SOCKS -d ' + server_host + ' -j RETURN')
     os.system('sudo iptables -t nat -A SOCKS -p tcp -j REDIRECT --to-ports 7777')
     os.system('sudo iptables -t nat -A SOCKS -p udp -j REDIRECT --to-ports 7777')
-    
-    pass
 
 def setoutchn():
-    chniptxt = open('chnip.txt',encoding='utf-8')
+    chniptxt = open('chnip.txt', encoding='utf-8')
     for line in chniptxt:
-        os.system('sudo iptables -t nat -A SOCKS -d '+line.strip('\n')+' -j RETURN')
+        os.system('sudo iptables -t nat -A SOCKS -d ' + line.strip('\n') + ' -j RETURN')
     print("尽情使用吧")
-#设置出国路由
 
 def setinchn():
     os.system('sudo iptables -t nat -N SOCKS')
-    chniptxt = open('chnip.txt',encoding='utf-8')
+    chniptxt = open('chnip.txt', encoding='utf-8')
     for line in chniptxt:
-        os.system('sudo iptables -t nat -A SOCKS -p tcp -d '+line.strip('\n')+' -j REDIRECT --to-ports 7777')
-        os.system('sudo iptables -t nat -A SOCKS -p udp -d '+line.strip('\n')+' -j REDIRECT --to-ports 7777')
+        os.system('sudo iptables -t nat -A SOCKS -p tcp -d ' + line.strip('\n') + ' -j REDIRECT --to-ports 7777')
+        os.system('sudo iptables -t nat -A SOCKS -p udp -d ' + line.strip('\n') + ' -j REDIRECT --to-ports 7777')
     os.system('sudo iptables -t nat -A OUTPUT -j SOCKS')
     print("尽情使用吧")
-#设置回国路由
 
-def setrouter(model,uid):
+def setrouter(model, uid):
     os.system('sudo iptables -t nat -N SOCKS')
     if model == "-1":
         print("设置全局代理")
@@ -99,21 +95,19 @@ def setrouter(model,uid):
     elif model == "-3":
         print("设置回国路由")
         setinchn()
-    pass
-#调整路由表
 
 def connectserver(tasks):
     print(tasks)
     uid = tasks[3:]
     model = tasks[0:2]
-    setrouter(model,uid)
+    setrouter(model, uid)
     startclient(uid)
     os.system('sudo iptables -t nat -F SOCKS')
     os.system('sudo iptables -t nat -F OUTPUT')
     exit()
 
 def showwrong(choose):
-    print(choose+"不是有效的命令")
+    print(choose + "不是有效的命令")
     print("输入help查看用法")
 
 print("ShadowRedir")
